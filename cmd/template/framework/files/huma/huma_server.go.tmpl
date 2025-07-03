@@ -9,7 +9,6 @@ import (
 	"syscall"
 	"time"
 
-	"{{.ProjectName}}/internal/routes"
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humafiber"
 	"github.com/gofiber/fiber/v2"
@@ -39,12 +38,12 @@ func NewServer() *Server {
 	api := humafiber.New(app, huma.DefaultConfig("{{.ProjectName}} API", "1.0.0"))
 
 	// Register routes
-	routes.RegisterRoutes(api)
-	{{if .HasWebsocket}}
-	routes.RegisterWebsocket(app)
+	RegisterRoutes(api, app) // Call RegisterRoutes directly
+	{{if index .AdvancedOptions "websocket"}}
+	RegisterWebsocket(app) // Call RegisterWebsocket directly
 	{{end}}
-	{{if .HasHtmx}}
-	routes.RegisterHtmx(app)
+	{{if index .AdvancedOptions "htmx"}}
+	RegisterHtmx(app) // Call RegisterHtmx directly
 	{{end}}
 
 

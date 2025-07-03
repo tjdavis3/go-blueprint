@@ -1,6 +1,7 @@
-package routes
+package server
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -20,7 +21,7 @@ type GreetingOutput struct {
 }
 
 // RegisterRoutes registers the Huma API routes.
-func RegisterRoutes(api huma.API) {
+func RegisterRoutes(api huma.API, app *fiber.App) {
 	// Simple health check
 	huma.Register(api, huma.Operation{
 		OperationID: "health-check",
@@ -28,8 +29,12 @@ func RegisterRoutes(api huma.API) {
 		Path:        "/health",
 		Summary:     "Health check endpoint",
 		Description: "Returns a 200 OK if the service is healthy.",
-	}, func(ctx huma.Context) {
-		// Huma automatically returns 200 OK if no error is returned
+		// For Huma v2, handlers generally take context.Context.
+		// For an endpoint with no specific input/output, we can use struct{}.
+	}, func(ctx context.Context, input *struct{}) (*struct{}, error) {
+		// Return nil, nil for a simple 200 OK.
+		// Huma will handle the response serialization.
+		return nil, nil
 	})
 
 	// Greeting endpoint
@@ -39,14 +44,14 @@ func RegisterRoutes(api huma.API) {
 		Path:        "/greet/{name}",
 		Summary:     "Get a greeting",
 		Description: "Returns a personalized greeting.",
-	}, func(ctx huma.Context, input *GreetingInput) (*GreetingOutput, error) {
+	}, func(ctx context.Context, input *GreetingInput) (*GreetingOutput, error) {
 		resp := &GreetingOutput{}
 		resp.Body.Message = "Hello, " + input.Name + "!"
 		return resp, nil
 	})
 }
 
-{{if .HasWebsocket}}
+{{if index .AdvancedOptions "websocket"}}
 // RegisterWebsocket registers the WebSocket routes for Fiber.
 // Huma does not directly manage WebSocket connections in the same way as HTTP routes.
 // So, we register WebSocket routes directly with Fiber.
@@ -73,7 +78,7 @@ func RegisterWebsocket(app *fiber.App) {
 {{end}}
 
 
-{{if .HasHtmx}}
+{{if index .AdvancedOptions "htmx"}}
 // RegisterHtmx registers the HTMX routes for Fiber.
 // Huma does not directly manage HTMX routes in the same way as HTTP routes.
 // So, we register HTMX routes directly with Fiber.
