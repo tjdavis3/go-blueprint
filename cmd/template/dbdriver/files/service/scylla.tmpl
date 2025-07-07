@@ -4,13 +4,14 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/gocql/gocql"
 	_ "github.com/joho/godotenv/autoload"
+
+	"{{.ProjectName}}/internal/config"
 )
 
 // Service defines the interface for health checks.
@@ -26,10 +27,10 @@ type service struct {
 
 // Environment variables for ScyllaDB connection.
 var (
-	hosts            = os.Getenv("{{.EnvPrefix}}_DB_HOSTS")       // Comma-separated list of hosts:port
-	username         = os.Getenv("{{.EnvPrefix}}_DB_USERNAME")    // Username for authentication
-	password         = os.Getenv("{{.EnvPrefix}}_DB_PASSWORD")    // Password for authentication
-	consistencyLevel = os.Getenv("{{.EnvPrefix}}_DB_CONSISTENCY") // Consistency level
+	hosts            = config.Getenv("{{.EnvPrefix}}_DB_HOSTS")       // Comma-separated list of hosts:port
+	username         = config.Getenv("{{.EnvPrefix}}_DB_USERNAME")    // Username for authentication
+	password         = config.Getenv("{{.EnvPrefix}}_DB_PASSWORD")    // Password for authentication
+	consistencyLevel = config.Getenv("{{.EnvPrefix}}_DB_CONSISTENCY") // Consistency level
 )
 
 // New initializes a new Service with a ScyllaDB Session.

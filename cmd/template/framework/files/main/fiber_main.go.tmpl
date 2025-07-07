@@ -4,12 +4,13 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"os/signal"
 	"strconv"
 	"syscall"
 	"time"
 	"{{.ProjectName}}/internal/server"
+	"{{.ProjectName}}/internal/config"
+
 
 	_ "github.com/joho/godotenv/autoload"
 )
@@ -49,7 +50,7 @@ func main() {
 	done := make(chan bool, 1)
 
 	go func() {
-		port, _ := strconv.Atoi(os.Getenv("{{.EnvPrefix}}_PORT"))
+		port, _ := strconv.Atoi(config.Getenv("{{.EnvPrefix}}_PORT"))
 		err := server.Listen(fmt.Sprintf(":%d", port))
 		if err != nil {
 			panic(fmt.Sprintf("http server error: %s", err))

@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"log"
 	"math"
-	"os"
 	"strconv"
 	"strings"
 	"time"
 
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/redis/go-redis/v9"
+
+	"{{.ProjectName}}/internal/config"
 )
 
 type Service interface {
@@ -23,10 +24,10 @@ type service struct {
 }
 
 var (
-	address  = os.Getenv("{{.EnvPrefix}}_DB_ADDRESS")
-	port     = os.Getenv("{{.EnvPrefix}}_DB_PORT")
-	password = os.Getenv("{{.EnvPrefix}}_DB_PASSWORD")
-	database = os.Getenv("{{.EnvPrefix}}_DB_DATABASE")
+	address  = config.Getenv("{{.EnvPrefix}}_DB_ADDRESS")
+	port     = config.Getenv("{{.EnvPrefix}}_DB_PORT")
+	password = config.Getenv("{{.EnvPrefix}}_DB_PASSWORD")
+	database = config.Getenv("{{.EnvPrefix}}_DB_DATABASE")
 )
 
 func New() Service {

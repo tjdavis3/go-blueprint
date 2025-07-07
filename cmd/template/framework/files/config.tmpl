@@ -1,0 +1,72 @@
+package config
+
+import (
+	"fmt"
+	"log"
+	"reflect"
+	"strings"
+
+    "github.com/BoRuDar/configuration/v5"
+    "github.com/fatih/structtag"
+)
+
+
+type Config struct {
+}
+
+var cfg *Config
+
+func init() {
+    var err error
+    cfg, err = configuration.New[Config](  // specify the [T] of the structure to be returned
+    // order of execution will be preserved:
+    configuration.NewFlagProvider(),             // 1st
+    configuration.NewEnvProvider(),              // 2nd
+    // configuration.NewYAMLFileProvider(fileName), // 3rd
+    configuration.NewDefaultProvider(),          // 4th
+    )
+    if err != nil {
+        log.Fatalf("unexpected error: %v", err)
+    }
+}
+
+// GetConfig returns the current configuration
+func GetConfig() *Config {
+    return cfg
+}
+
+// Getenv is a direct replacement for os.Getenv using the config
+func Getenv(envvar string) string {
+	t := reflect.TypeOf(*cfg)
+	for i := range t.NumField() {
+		field := reflect.TypeOf(Config{}).Field(i)
+		tag := field.Tag
+		tags, err := structtag.Parse(string(tag))
+		if err != nil {
+			continue
+		}
+		envTag, err := tags.Get("env")
+		if err != nil {
+			continue
+		}
+		if envTag.Name == envvar {
+			return fmt.Sprint(getValueFromField(*cfg, field.Name))
+			// break
+		}
+	}
+    return ""
+}
+
+func getValueFromField(obj any, fieldName string) any {
+	objectType := reflect.TypeOf(obj)
+	for i := 0; i < objectType.NumField(); i++ {
+		field := objectType.Field(i)
+		if strings.EqualFold(field.Name, fieldName) {
+			return reflect.ValueOf(obj).Field(i).Interface()
+		}
+	}
+	return nil
+}
+
+
+

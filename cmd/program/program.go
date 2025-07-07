@@ -118,6 +118,7 @@ const (
 	cmdWebPath           = "cmd/web"
 	internalServerPath   = "internal/server"
 	internalDatabasePath = "internal/database"
+	internalConfigPath   = "internal/config"
 	gitHubActionPath     = ".github/workflows"
 )
 
@@ -424,6 +425,18 @@ func (p *Project) CreateMainFile() error {
 	readmeFileTemplate := template.Must(template.New("readme").Parse(string(framework.ReadmeTemplate())))
 	err = readmeFileTemplate.Execute(readmeFile, p)
 	if err != nil {
+		return err
+	}
+
+	err = p.CreatePath(internalConfigPath, projectPath)
+	if err != nil {
+		log.Printf("Error creating path: %s", internalServerPath)
+		return err
+	}
+
+	err = p.CreateFileWithInjection(internalConfigPath, projectPath, "config.go", "config")
+	if err != nil {
+		log.Printf("Error injecting config.go file: %v", err)
 		return err
 	}
 
@@ -770,6 +783,9 @@ func (p *Project) CreateFileWithInjection(pathToCreate string, projectPath strin
 	switch methodName {
 	case "main":
 		createdTemplate := template.Must(template.New(fileName).Parse(string(p.FrameworkMap[p.ProjectType].templater.Main())))
+		err = createdTemplate.Execute(createdFile, p)
+	case "config":
+		createdTemplate := template.Must(template.New(fileName).Parse(string(tpl.ConfigTemplate())))
 		err = createdTemplate.Execute(createdFile, p)
 	case "server":
 		createdTemplate := template.Must(template.New(fileName).Parse(string(p.FrameworkMap[p.ProjectType].templater.Server())))

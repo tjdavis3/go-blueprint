@@ -3,11 +3,12 @@ package server
 import (
 	"fmt"
 	"net/http"
-	"os"
 	"strconv"
 	"time"
 
 	_ "github.com/joho/godotenv/autoload"
+	
+	"{{.ProjectName}}/internal/config"
   {{if ne .DBDriver "none"}}
 	"{{.ProjectName}}/internal/database"
   {{end}}
@@ -21,7 +22,7 @@ type Server struct {
 }
 
 func NewServer() *http.Server {
-	port, _ := strconv.Atoi(os.Getenv("{{.EnvPrefix}}_PORT"))
+	port, _ := strconv.Atoi(config.Getenv("{{.EnvPrefix}}_PORT"))
 	NewServer := &Server{
 		port: port,
   {{if ne .DBDriver "none"}}

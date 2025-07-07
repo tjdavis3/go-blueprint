@@ -5,12 +5,13 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"os"
 	"strconv"
 	"time"
 
 	_ "github.com/tursodatabase/libsql-client-go/libsql"
 	_ "github.com/joho/godotenv/autoload"
+
+	"{{.ProjectName}}/internal/config"
 )
 
 // Service represents a service that interacts with a database.
@@ -29,7 +30,7 @@ type service struct {
 }
 
 var (
-	dburl = os.Getenv("{{.EnvPrefix}}_DB_URL")
+	dburl = config.Getenv("{{.EnvPrefix}}_DB_URL")
 	dbInstance *service
 )
 

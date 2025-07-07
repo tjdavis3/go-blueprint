@@ -4,17 +4,19 @@ package main
 import (
 	"{{.ProjectName}}/internal/server"
 	"log"
-	"os"
 
 	"github.com/joho/godotenv"
+
+	"{{.ProjectName}}/internal/config"
 )
 
 func main() {
+
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found")
 	}
 
-	appPort := os.Getenv("{{.EnvPrefix}}_PORT")
+	appPort := config.Getenv("{{.EnvPrefix}}_PORT")
 	if appPort == "" {
 		appPort = "8080"
 	}

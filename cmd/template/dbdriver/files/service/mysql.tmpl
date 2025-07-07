@@ -5,12 +5,13 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"os"
 	"strconv"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/joho/godotenv/autoload"
+
+	"{{.ProjectName}}/internal/config"
 )
 
 // Service represents a service that interacts with a database.
@@ -29,11 +30,11 @@ type service struct {
 }
 
 var (
-	dbname     = os.Getenv("{{.EnvPrefix}}_DB_DATABASE")
-	password   = os.Getenv("{{.EnvPrefix}}_DB_PASSWORD")
-	username   = os.Getenv("{{.EnvPrefix}}_DB_USERNAME")
-	port       = os.Getenv("{{.EnvPrefix}}_DB_PORT")
-	host       = os.Getenv("{{.EnvPrefix}}_DB_HOST")
+	dbname     = config.Getenv("{{.EnvPrefix}}_DB_DATABASE")
+	password   = config.Getenv("{{.EnvPrefix}}_DB_PASSWORD")
+	username   = config.Getenv("{{.EnvPrefix}}_DB_USERNAME")
+	port       = config.Getenv("{{.EnvPrefix}}_DB_PORT")
+	host       = config.Getenv("{{.EnvPrefix}}_DB_HOST")
 	dbInstance *service
 )
 

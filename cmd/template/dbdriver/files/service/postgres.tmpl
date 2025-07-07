@@ -5,12 +5,13 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"os"
 	"strconv"
 	"time"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
 	_ "github.com/joho/godotenv/autoload"
+
+	"{{.ProjectName}}/internal/config"
 )
 
 // Service represents a service that interacts with a database.
@@ -29,12 +30,12 @@ type service struct {
 }
 
 var (
-	database = os.Getenv("{{.EnvPrefix}}_DB_DATABASE")
-	password = os.Getenv("{{.EnvPrefix}}_DB_PASSWORD")
-	username = os.Getenv("{{.EnvPrefix}}_DB_USERNAME")
-	port     = os.Getenv("{{.EnvPrefix}}_DB_PORT")
-	host     = os.Getenv("{{.EnvPrefix}}_DB_HOST")
-        schema   = os.Getenv("{{.EnvPrefix}}_DB_SCHEMA")
+	database = config.Getenv("{{.EnvPrefix}}_DB_DATABASE")
+	password = config.Getenv("{{.EnvPrefix}}_DB_PASSWORD")
+	username = config.Getenv("{{.EnvPrefix}}_DB_USERNAME")
+	port     = config.Getenv("{{.EnvPrefix}}_DB_PORT")
+	host     = config.Getenv("{{.EnvPrefix}}_DB_HOST")
+        schema   = config.Getenv("{{.EnvPrefix}}_DB_SCHEMA")
 	dbInstance *service
 )
 
