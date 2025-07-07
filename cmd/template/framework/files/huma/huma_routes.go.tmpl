@@ -20,6 +20,13 @@ type GreetingOutput struct {
 	}
 }
 
+// HealthOutput represents the output for the health-check operation.
+type HealthOutput struct {
+	Body struct {
+		Status string
+	}
+}
+
 // RegisterRoutes registers the Huma API routes.
 func RegisterRoutes(api huma.API, app *fiber.App) {
 	// Simple health check
@@ -31,10 +38,12 @@ func RegisterRoutes(api huma.API, app *fiber.App) {
 		Description: "Returns a 200 OK if the service is healthy.",
 		// For Huma v2, handlers generally take context.Context.
 		// For an endpoint with no specific input/output, we can use struct{}.
-	}, func(ctx context.Context, input *struct{}) (*struct{}, error) {
+	}, func(ctx context.Context, input *struct{}) (*HealthOutput, error) {
 		// Return nil, nil for a simple 200 OK.
 		// Huma will handle the response serialization.
-		return nil, nil
+		resp := &HealthOutput{}
+		resp.Body.Status = "Ok"
+		return resp, nil
 	})
 
 	// Greeting endpoint
