@@ -10,7 +10,7 @@ import (
     "github.com/fatih/structtag"
 )
 
-
+//go:generate go run github.com/g4s8/envdoc -tag-default default  -output ../../env-doc.md -required-if-no-def
 type Config struct {
 }
 
